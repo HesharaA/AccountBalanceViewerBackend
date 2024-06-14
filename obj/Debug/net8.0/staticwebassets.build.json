@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "Sn8zmSk8gNQ9+PxLBimjuSr7q9SDBFOc3rNqh10nKeY=",
+  "Source": "AccountBalanceViewerApi",
+  "BasePath": "_content/AccountBalanceViewerApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
