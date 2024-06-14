@@ -1,31 +1,22 @@
-using AccountBalanceViewerApi.Data;
+using AccountBalanceViewerApi.Interfaces;
 using AccountsBalanceViewerApi.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 [Route("api/balance")]
 [ApiController]
 public class BalancesController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IAccountBalanceRepository _repo;
 
-    public BalancesController(ApplicationDbContext context)
+    public BalancesController(IAccountBalanceRepository repo)
     {
-        _context = context;
+        _repo = repo;
     }
 
-    private async Task<IActionResult> GetBalancesForDate(DateTime date)
+    private async Task<IActionResult> GetBalancesForDate(DateTime? date)
     {
-        DateTime filterDate = date;
-
-        var balances = await _context.AccountBalances.Where(i => i.BalanceDate.Year == filterDate.Year && i.BalanceDate.Month == filterDate.Month)
-            .OrderByDescending(b => b.BalanceDate)
-            .ToListAsync();
+        var balances = await _repo.GetBalancesForDateAsync(date);
 
         if (balances.IsNullOrEmpty())
         {
@@ -44,7 +35,7 @@ public class BalancesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetBalances()
     {
-        return await GetBalancesForDate(DateTime.Now);
+        return await GetBalancesForDate(null);
     }
 
     [HttpPost("upload")]
@@ -62,7 +53,7 @@ public class BalancesController : ControllerBase
 
                 if (columns.Length == 3 && DateTime.TryParse(columns[2], out var balanceDate))
                 {
-                    var currentBalance = await _context.AccountBalances.FirstAsync(i => i.BalanceDate.Year == balanceDate.Year && i.BalanceDate.Month == balanceDate.Month);
+                    var currentBalance = await _repo.GetBalanceForDateAsync(balanceDate);
 
                     var newAccountBalance = new AccountBalance
                     {
@@ -73,7 +64,7 @@ public class BalancesController : ControllerBase
 
                     if (currentBalance == null)
                     {
-                        _context.AccountBalances.Add(newAccountBalance);
+                        await _repo.CreateAsync(newAccountBalance);
                     }
                     else
                     {
@@ -85,7 +76,6 @@ public class BalancesController : ControllerBase
             }
         }
 
-        await _context.SaveChangesAsync();
         return Created();
     }
 }
