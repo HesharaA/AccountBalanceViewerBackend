@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AccountsBalanceViewerApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AccountsBalanceViewerApi.Data
+namespace AccountBalanceViewerApi.Data
 {
     public class ApplicationDbContext : DbContext
     {
