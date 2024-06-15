@@ -21,9 +21,10 @@ namespace AccountBalanceViewerApi.Repositorys
             return balanceModel;
         }
 
-        public async Task<AccountBalance> GetBalanceForDateAsync(DateTime date)
+        public async Task<AccountBalance?> GetBalanceForDateAsync(DateTime date)
         {
-            return await _context.AccountBalances.FirstAsync(i => i.BalanceDate.Year == date.Year && i.BalanceDate.Month == date.Month);
+            return await _context.AccountBalances.FirstOrDefaultAsync(i => i.BalanceDate.Year == date.Year && i.BalanceDate.Month == date.Month);
+
         }
 
         public async Task<List<AccountBalance>> GetBalancesForDateAsync(DateTime? date)

@@ -6,7 +6,7 @@ namespace AccountBalanceViewerApi.Interfaces
     {
         Task<List<AccountBalance>> GetBalancesForDateAsync(DateTime? date);
 
-        Task<AccountBalance> GetBalanceForDateAsync(DateTime date);
+        Task<AccountBalance?> GetBalanceForDateAsync(DateTime date);
 
         Task<AccountBalance> CreateAsync(AccountBalance balanceModel);
 
