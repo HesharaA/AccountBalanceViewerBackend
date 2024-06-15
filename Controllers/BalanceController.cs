@@ -36,10 +36,10 @@ public class BalancesController : ControllerBase
     /// <param name="type"> Used to determine <c>file</c> type provided to validate the <c>file</c> accordingly.</param>
     /// <exception cref="InvalidOperationException">
     /// Thrown when,
-    /// *Data is not found within the <c>file</c>.
-    /// *The <c>file</c> is structured properly (with three colunms).
+    /// *data is not found within the <c>file</c>.
+    /// *The <c>file</c> isn't structured properly (with three colunms).
     /// *<c>file</c> contains account balances that are already added to the DB.
-    /// *Invalid data found in file <c>file</c>.
+    /// *invalid data found in file <c>file</c>.
     /// </exception>
     /// <returns> Returns a list of <c>AccountBalance</c> that are found within the <c>file</c>.</returns>
     private async Task<List<AccountBalance>> ProcessFile(IFormFile file, FileType type)
