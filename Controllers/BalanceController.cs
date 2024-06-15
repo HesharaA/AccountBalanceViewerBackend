@@ -21,6 +21,9 @@ public class BalancesController : ControllerBase
         _repo = repo;
     }
 
+    /// <summary> Checks if a account balance is already present in the DB for the given <c><paramref name="date"/></c></summary>
+    /// <param name="date"> Used as the predicate to search entries </param>
+    /// <returns> true if an entry is found in the DB</returns>
     private async Task<bool> isAccountBalancePresent(DateTime date)
     {
         AccountBalance? balance = await _repo.GetBalanceForDateAsync(date);
@@ -28,6 +31,17 @@ public class BalancesController : ControllerBase
         return balance != null;
     }
 
+    /// <summary> Validates the <c><paramref name="file"/></c></summary>
+    /// <param name="file"> File that's validated and used to generate a <c>AccountBalance</c> list</param>
+    /// <param name="type"> Used to determine <c>file</c> type provided to validate the <c>file</c> accordingly</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when,
+    /// *Data is not found within the <c>file</c>.
+    /// *The <c>file</c> is structured properly (with three colunms).
+    /// *<c>file</c> contains account balances that are already added to the DB.
+    /// *Invalid data found in file <c>file</c>.
+    /// </exception>
+    /// <returns> Returns a list of <c>AccountBalance</c> that are found in within the <c>file</c></returns>
     private async Task<List<AccountBalance>> ProcessFile(IFormFile file, FileType type)
     {
         List<AccountBalance> balances = [];
@@ -138,6 +152,9 @@ public class BalancesController : ControllerBase
 
     }
 
+    /// <summary> Processes <c><paramref name="file"/></c> and adds the resulted account balances to DB</summary>
+    /// <param name="file"> File that's validated and used to generate a <c>AccountBalance</c> list</param>
+    /// <param name="type"> Used to determine <c>file</c> type</param>
     private async Task HandleFile(IFormFile file, FileType type)
     {
         List<AccountBalance> balances = await ProcessFile(file, type);
@@ -148,6 +165,9 @@ public class BalancesController : ControllerBase
         }
     }
 
+    /// <summary> Handles request to get balances for given <c><paramref name="date"/></c></summary>        
+    /// <param name="date"> Used as the predicate to search entries </param>       
+    /// <returns> List of <c><AccountBalance/c></returns>
     [HttpGet]
     public async Task<IActionResult> GetBalances([FromQuery] DateTime? date)
     {
@@ -161,6 +181,8 @@ public class BalancesController : ControllerBase
         return Ok(balances);
     }
 
+    /// <summary> Handles <c>AccountBalance</c> data entry to DB from <c><paramref name="file"/></c></summary>     
+    /// <param name="file"> Used to extract data and add to DB</param>
     [HttpPost("upload")]
     public async Task<IActionResult> UploadBalanceFile(IFormFile file)
     {
