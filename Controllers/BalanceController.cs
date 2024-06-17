@@ -169,17 +169,21 @@ public class BalancesController : ControllerBase
     /// <param name="date"> Used as the predicate to search entries.</param>       
     [HttpGet]
     public async Task<IActionResult> GetBalances([FromQuery] DateTime? date)
+
     {
         var balances = await _repo.GetBalancesForDateAsync(date ?? DateTime.Now);
-
-        if (balances.IsNullOrEmpty())
-        {
-            return NoContent();
-        }
 
         return Ok(balances);
     }
 
+    /// <summary> Returns all the distinct dates found in the DB.</summary>        
+    [HttpGet("distinct")]
+    public async Task<IActionResult> GetDistinctBalanceDate()
+    {
+        var balances = await _repo.GetDistinctBalanceDatesAsync();
+
+        return Ok(balances);
+    }
     /// <summary> Handles <c>AccountBalance</c> data entry to DB from given <c><paramref name="file"/></c>.</summary>     
     /// <param name="file"> Used to extract data and add to DB.</param>
     [HttpPost("upload")]

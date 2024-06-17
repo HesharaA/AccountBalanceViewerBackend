@@ -6,6 +6,8 @@ namespace AccountBalanceViewerApi.Interfaces
     {
         Task<List<AccountBalance>> GetBalancesForDateAsync(DateTime? date);
 
+        Task<List<DateTime>> GetDistinctBalanceDatesAsync();
+
         Task<AccountBalance?> GetBalanceForDateAsync(DateTime date);
 
         Task<AccountBalance> CreateAsync(AccountBalance balanceModel);

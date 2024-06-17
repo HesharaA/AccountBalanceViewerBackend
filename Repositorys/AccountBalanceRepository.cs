@@ -33,15 +33,21 @@ namespace AccountBalanceViewerApi.Repositorys
 
         }
 
-        ///<summary> Retrieves a list <c>AccountBalance</c> from DB for given <c><paramref name="date"/></c> or current date.</summary>
-        /// <param name="date"> Used as the the predicate to query the DB.</param>
-        /// <returns> list of <c>AccountBalance</c> from DB using the <c><paramref name="date"/></c> or for current date.</returns>
+        ///<summary>Returns all the distinct dates found in the DB.</summary>
         public async Task<List<AccountBalance>> GetBalancesForDateAsync(DateTime? date)
         {
             var filterDate = date ?? DateTime.Now;
 
             return await _context.AccountBalances.Where(i => i.BalanceDate.Year == filterDate.Year && i.BalanceDate.Month == filterDate.Month)
             .OrderByDescending(b => b.BalanceDate)
+            .ToListAsync();
+        }
+
+        public async Task<List<DateTime>> GetDistinctBalanceDatesAsync()
+        {
+            return await _context.AccountBalances
+            .Select(balance => balance.BalanceDate)
+            .Distinct()
             .ToListAsync();
         }
     }
