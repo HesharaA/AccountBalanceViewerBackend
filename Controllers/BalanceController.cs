@@ -155,7 +155,7 @@ public class BalancesController : ControllerBase
     /// <summary> Processes <c><paramref name="file"/></c> and adds the resulted account balances to DB.</summary>
     /// <param name="file"> File that's validated and used to generate a <c>AccountBalance</c> list.</param>
     /// <param name="type"> Used to determine <c>file</c> type.</param>
-    private async Task HandleFile(IFormFile file, FileType type)
+    private async Task<AccountBalance> HandleFile(IFormFile file, FileType type)
     {
         List<AccountBalance> balances = await ProcessFile(file, type);
 
@@ -163,6 +163,8 @@ public class BalancesController : ControllerBase
         {
             await _repo.CreateAsync(balance);
         }
+
+        return balances[0];
     }
 
     /// <summary> Handles request to get balances for given <c><paramref name="date"/></c>.</summary>        
@@ -193,15 +195,16 @@ public class BalancesController : ControllerBase
             return BadRequest("Data not found in file");
 
         var extension = Path.GetExtension(file.FileName);
+        AccountBalance resultDate;
         try
         {
             if (extension.Equals(".txt", StringComparison.OrdinalIgnoreCase))
             {
-                await HandleFile(file, FileType.tab);
+                resultDate = await HandleFile(file, FileType.tab);
             }
             else if (extension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
             {
-                await HandleFile(file, FileType.xl);
+                resultDate = await HandleFile(file, FileType.xl);
             }
             else
             {
@@ -212,7 +215,6 @@ public class BalancesController : ControllerBase
         {
             return BadRequest(e.Message);
         }
-
-        return Ok();
+        return Ok(resultDate);
     }
 }
