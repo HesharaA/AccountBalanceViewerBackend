@@ -56,20 +56,18 @@ public class BalancesController : ControllerBase
                     string? line = await stream.ReadLineAsync();
                     while (line != null)
                     {
-
-                        Console.WriteLine("Line" + lineCount);
                         var columns = line!.Split('\t');
+
+                        if (columns.Length != 3)
+                        {
+                            throw new InvalidOperationException("The file is not a valid tab-separated file.");
+                        }
 
                         if (lineCount == 0 || lineCount > 5)
                         {
                             line = await stream.ReadLineAsync();
                             lineCount++;
                             continue;
-                        }
-
-                        if (columns.Length != 3)
-                        {
-                            throw new InvalidOperationException("The file is not a valid tab-separated file.");
                         }
 
                         if (DateTime.TryParse(columns[2], out var balanceDate) && decimal.TryParse(columns[1], out var balance))
