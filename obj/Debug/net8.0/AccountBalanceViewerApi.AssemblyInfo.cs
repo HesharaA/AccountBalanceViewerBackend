@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AccountBalanceViewerApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0e6c6f24f524d941bd1aafa8fde65e6dd56d42d1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e666deb5817a82c3d26e6b7776684642d681fe45")]
 [assembly: System.Reflection.AssemblyProductAttribute("AccountBalanceViewerApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AccountBalanceViewerApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

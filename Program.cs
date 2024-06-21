@@ -10,11 +10,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 if (connectionString.IsNullOrEmpty())
 {
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
 }
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
