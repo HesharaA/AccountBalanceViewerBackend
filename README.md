@@ -31,6 +31,8 @@ ASP .NET Web API backend of the [Account Balance Viewer](https://github.com/Hesh
    3. Replace {SERVER_NAME} and {DATABASE_NAME} with your actual server name and database name, respectively.
    - Example 
    >`"DefaultConnection":"Data Source={SERVER_NAME}\\SQLEXPRESS;Initial Catalog={DATABASE_NAME};Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"`
+   4. Run `dotnet ef migrations add init`
+   5. Run `dotnet ef database update`
 3. Run `dotnet watch run` or `dotnet watch run --project AccountBalanceViewerApi`
 
 ## Build for production
