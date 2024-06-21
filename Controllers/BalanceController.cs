@@ -58,16 +58,16 @@ public class BalancesController : ControllerBase
                     {
                         var columns = line!.Split('\t');
 
-                        if (columns.Length != 3)
-                        {
-                            throw new InvalidOperationException("The file is not a valid tab-separated file.");
-                        }
-
-                        if (lineCount == 0 || lineCount > 5)
+                        if (lineCount == 0 || columns.Length == 1 && columns[0].IsNullOrEmpty())
                         {
                             line = await stream.ReadLineAsync();
                             lineCount++;
                             continue;
+                        }
+
+                        if (columns.Length != 3)
+                        {
+                            throw new InvalidOperationException("The file is not a valid tab-separated file.");
                         }
 
                         if (DateTime.TryParse(columns[2], out var balanceDate) && decimal.TryParse(columns[1], out var balance))
@@ -146,14 +146,20 @@ public class BalancesController : ControllerBase
             default: throw new InvalidOperationException("Unsuported file type");
         }
 
+        if (balances.IsNullOrEmpty())
+        {
+            throw new InvalidOperationException("Invalid data structure in file");
+        }
+
         return balances;
 
     }
 
     /// <summary> Processes <c><paramref name="file"/></c> and adds the resulted account balances to DB.</summary>
     /// <param name="file"> File that's validated and used to generate a <c>AccountBalance</c> list.</param>
-    /// <param name="type"> Used to determine <c>file</c> type.</param>
-    private async Task<AccountBalance> HandleFile(IFormFile file, FileType type)
+    /// <param name="type"> Used to determine <c>file</c> type.</param>   
+    /// <returns>A list of all new balances added to the DB</returns>
+    private async Task<List<AccountBalance>> HandleFile(IFormFile file, FileType type)
     {
         List<AccountBalance> balances = await ProcessFile(file, type);
 
@@ -162,7 +168,7 @@ public class BalancesController : ControllerBase
             await _repo.CreateAsync(balance);
         }
 
-        return balances[0];
+        return balances;
     }
 
     /// <summary> Handles request to get balances for given <c><paramref name="date"/></c>.</summary>        
@@ -186,6 +192,7 @@ public class BalancesController : ControllerBase
     }
     /// <summary> Handles <c>AccountBalance</c> data entry to DB from given <c><paramref name="file"/></c>.</summary>     
     /// <param name="file"> Used to extract data and add to DB.</param>
+    /// <returns>A list of all new balances added to the DB</returns>
     [HttpPost("upload")]
     public async Task<IActionResult> UploadBalanceFile(IFormFile file)
     {
@@ -193,7 +200,7 @@ public class BalancesController : ControllerBase
             return BadRequest("Data not found in file");
 
         var extension = Path.GetExtension(file.FileName);
-        AccountBalance resultDate;
+        List<AccountBalance> resultDate;
         try
         {
             if (extension.Equals(".txt", StringComparison.OrdinalIgnoreCase))
